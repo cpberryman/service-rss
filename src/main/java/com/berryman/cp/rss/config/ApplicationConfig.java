@@ -30,12 +30,10 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public Cache<String, RssFeed> rssEntryCache() {
-
+    public Cache rssEntryCache() {
         CacheManager cacheManager = CacheManager.getInstance();
-        cm.addCache("cache1");
-
-
+        cacheManager.addCache("rssEntryCache");
+        return cacheManager.getCache("rssEntryCache");
     }
 
 
