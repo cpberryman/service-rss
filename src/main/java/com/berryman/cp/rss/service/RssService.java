@@ -12,9 +12,13 @@ import java.util.List;
  */
 public interface RssService {
 
-    List<RssEntry> listEntriesByFeed(RssFeed rssFeed);
+    List<RssEntry> listAllEntries();  //all entries listed
 
-    List<RssEntry> listEntriesByNumber(RssFeed rssFeed, Integer number);
+    List<RssEntry> listEntriesByNumber(Integer number);  //entries listed for all feeds by number
+
+    List<RssEntry> listEntriesByFeed(RssFeed rssFeed);  //all entries listed for a feed
+
+    List<RssEntry> listEntriesForFeedByNumber(RssFeed rssFeed, Integer number); //a given number of entries for a given feed
 
 
 }
