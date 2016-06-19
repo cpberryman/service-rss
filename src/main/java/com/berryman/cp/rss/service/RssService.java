@@ -20,6 +20,5 @@ public interface RssService {
 
     List<RssEntry> listEntriesForFeedByNumber(RssFeed rssFeed, Integer number); //a given number of entries for a given feed
 
-
 }
 

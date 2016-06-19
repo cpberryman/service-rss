@@ -12,6 +12,6 @@ import java.util.List;
  */
 public interface HttpRssDao {
 
-    List<RssEntry> retrieveEntries(RssFeed feed);
+    List<RssEntry> retrieveRssEntries(RssFeed rssFeed);
 
 }
