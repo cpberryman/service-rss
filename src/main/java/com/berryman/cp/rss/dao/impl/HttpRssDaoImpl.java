@@ -4,6 +4,7 @@ import com.berryman.cp.rss.dao.HttpRssDao;
 import com.berryman.cp.rss.model.RssEntry;
 import com.berryman.cp.rss.model.RssEntryBuilder;
 import com.berryman.cp.rss.model.RssFeed;
+import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndEntryImpl;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
@@ -39,9 +40,9 @@ public class HttpRssDaoImpl implements HttpRssDao {
     public List<RssEntry> retrieveRssEntries(RssFeed rssFeed) {
 
         List<RssEntry> rssEntries = new ArrayList<>();
-        List<SyndEntryImpl> syndEntries = retrieveSyndEntries(rssFeed.getRssUrl());
+        List<SyndEntry> syndEntries = retrieveSyndEntries(rssFeed.getRssUrl());
 
-        for (SyndEntryImpl syndEntry : syndEntries) {
+        for (SyndEntry syndEntry : syndEntries) {
             rssEntries.add(rssEntryBuilder.buildRssEntry(syndEntry, rssFeed));
         }
 
@@ -49,23 +50,24 @@ public class HttpRssDaoImpl implements HttpRssDao {
 
     }
 
-    private List<SyndEntryImpl> retrieveSyndEntries(String url) {
+    private List<SyndEntry> retrieveSyndEntries(String url) {
 
-        List<SyndEntryImpl> syndEntries = new ArrayList<>();
+        List<SyndEntry> syndEntries = new ArrayList<>();
 
         try {
             URL feedUrl = new URL(url);
             SyndFeedInput syndFeedInput = new SyndFeedInput();
             SyndFeed syndFeed = url.contains("https") ? syndFeedInput.build(new XmlReader(asHttpRequest(feedUrl))) : syndFeedInput.build(new XmlReader(feedUrl));
-
+            syndEntries = syndFeed.getEntries();
         } catch (MalformedURLException ex) {
             LOGGER.debug("Bad feed url: ", ex);
         } catch (IOException ex) {
             LOGGER.debug("IO error when reading in feed XML: ", ex);
         } catch (FeedException ex) {
-            OGGER.debug("Bad feed: ", ex);
+            LOGGER.debug("Bad feed: ", ex);
         }
 
+        return syndEntries;
 
     }
 
@@ -80,8 +82,5 @@ public class HttpRssDaoImpl implements HttpRssDao {
         }
         return httpURLConnection;
     }
-
-
-
 
 }

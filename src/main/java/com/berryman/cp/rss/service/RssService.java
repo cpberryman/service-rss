@@ -20,5 +20,9 @@ public interface RssService {
 
     List<RssEntry> listEntriesForFeedByNumber(RssFeed rssFeed, Integer number); //a given number of entries for a given feed
 
+    void addFeed(RssFeed rssFeed);
+
+    void deleteFeed(RssFeed rssFeed);
+
 }
 
