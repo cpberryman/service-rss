@@ -1,6 +1,10 @@
 package com.berryman.cp.rss.config;
 
 import static com.berryman.cp.rss.util.Constants.*;
+
+import com.berryman.cp.rss.model.RssFeed;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
@@ -23,6 +27,15 @@ public class ApplicationConfig {
         threadPoolTaskExecutor.setMaxPoolSize(MAX_POOL_SIZE);
         threadPoolTaskExecutor.setQueueCapacity(QUE_CAPACITY);
         return threadPoolTaskExecutor;
+    }
+
+    @Bean
+    public Cache<String, RssFeed> rssEntryCache() {
+
+        CacheManager cacheManager = CacheManager.getInstance();
+        cm.addCache("cache1");
+
+
     }
 
 

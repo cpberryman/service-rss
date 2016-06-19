@@ -11,4 +11,6 @@ public class Constants {
     public static final Integer MAX_POOL_SIZE = 10;
     public static final Integer QUE_CAPACITY = 25;
 
+    public static final String CACHE_NAME = ()
+
 }

@@ -14,6 +14,13 @@ public interface RssRepository extends MongoRepository<RssFeed, String> {
 
     List<RssFeed> findAllRssFeeds();
 
+    RssFeed findRssFeedById(Integer id);
+
     RssFeed findRssFeedByName(String name);
+
+    void insertRssFeed(RssFeed rssFeed);
+
+    void deleteRssFeed(RssFeed rssFeed);
+
 
 }
