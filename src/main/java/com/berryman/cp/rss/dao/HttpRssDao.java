@@ -2,6 +2,7 @@ package com.berryman.cp.rss.dao;
 
 import com.berryman.cp.rss.model.RssEntry;
 import com.berryman.cp.rss.model.RssFeed;
+import com.rometools.rome.feed.synd.SyndCategory;
 
 import java.util.List;
 
@@ -12,6 +13,16 @@ import java.util.List;
  */
 public interface HttpRssDao {
 
-    List<RssEntry> retrieveRssEntries(RssFeed rssFeed);
+    HttpRssDao setFeed(RssFeed rssFeed);
+
+    RssFeed getRssFeed();
+
+    List<SyndCategory> retrieveFeedCategories();
+
+    String retrieveFeedTitle();
+
+    List<RssEntry> retrieveRssEntries();
+
+
 
 }

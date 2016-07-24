@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -14,13 +15,14 @@ import java.util.List;
  * @author cpberryman.
  */
 @Component
-public class RssFeed {
+public class RssFeed implements Serializable {
 
     @Id
     private Integer id;
-    private String name;
+    private String title;
     private String httpUrl;
     private String rssUrl;
+    private List<String> categories;
     private List<RssEntry> rssEntries;
 
     public Integer getId() {
@@ -32,12 +34,12 @@ public class RssFeed {
         return this;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public RssFeed setName(String name) {
-        this.name = name;
+    public RssFeed setTitle(String title) {
+        this.title = title;
         return this;
     }
 
@@ -56,6 +58,15 @@ public class RssFeed {
 
     public RssFeed setRssUrl(String rssUrl) {
         this.rssUrl = rssUrl;
+        return this;
+    }
+
+    public List<String> getCatagories() {
+        return categories;
+    }
+
+    public RssFeed setCatagories(List<String> categories) {
+        this.categories = categories;
         return this;
     }
 
@@ -78,9 +89,10 @@ public class RssFeed {
 
         return new EqualsBuilder()
                 .append(id, rssFeed.id)
-                .append(name, rssFeed.name)
+                .append(title, rssFeed.title)
                 .append(httpUrl, rssFeed.httpUrl)
                 .append(rssUrl, rssFeed.rssUrl)
+                .append(categories, rssFeed.categories)
                 .append(rssEntries, rssFeed.rssEntries)
                 .isEquals();
     }
@@ -89,9 +101,10 @@ public class RssFeed {
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
                 .append(id)
-                .append(name)
+                .append(title)
                 .append(httpUrl)
                 .append(rssUrl)
+                .append(categories)
                 .append(rssEntries)
                 .toHashCode();
     }
@@ -100,9 +113,10 @@ public class RssFeed {
     public String toString() {
         return new ToStringBuilder(this)
                 .append("id", id)
-                .append("name", name)
+                .append("title", title)
                 .append("httpUrl", httpUrl)
                 .append("rssUrl", rssUrl)
+                .append("categories", categories)
                 .append("rssEntries", rssEntries)
                 .toString();
     }

@@ -2,6 +2,7 @@ package com.berryman.cp.rss.service.impl;
 
 import com.berryman.cp.rss.model.RssEntry;
 import com.berryman.cp.rss.model.RssFeed;
+import com.berryman.cp.rss.model.RssFeedBuilder;
 import com.berryman.cp.rss.repository.RssRepository;
 import com.berryman.cp.rss.service.RssService;
 import net.sf.ehcache.Cache;
@@ -27,6 +28,9 @@ public class RssServiceImpl implements RssService {
     @Autowired
     private RssRepository rssRepository;
 
+    @Autowired
+    private RssFeedBuilder rssFeedBuilder;
+
     public List<RssEntry> listAllEntries() {
         List<RssEntry> rssEntries = new ArrayList<>();
         Map<Object, Element> rssFeeds = rssEntryCache.getAll(rssEntryCache.getKeys());
@@ -49,8 +53,8 @@ public class RssServiceImpl implements RssService {
 
     public List<RssEntry> listEntriesByFeed(RssFeed rssFeed) {
         List<RssEntry> rssEntries = new ArrayList<>();
-        RssEntry[] rssEntriesArray = (RssEntry[]) rssEntryCache.get(rssFeed.getId()).getObjectValue();
-        rssEntries.addAll(Arrays.asList(rssEntriesArray));
+        RssFeed rssFeedTemp = (RssFeed) rssEntryCache.get(rssFeed.getId()).getObjectValue();
+        rssEntries.addAll(rssFeedTemp.getRssEntries());
         return rssEntries;
     }
 
@@ -58,8 +62,8 @@ public class RssServiceImpl implements RssService {
         return getEntriesByNumber(rssFeed, number);
     }
 
-    public void addFeed(RssFeed rssFeed) {
-        rssRepository.insertRssFeed(rssFeed);
+    public void addFeed(String url) {
+        rssRepository.insertRssFeed(rssFeedBuilder.buildRssFeed(url));
     }
 
     public void deleteFeed(RssFeed rssFeed) {

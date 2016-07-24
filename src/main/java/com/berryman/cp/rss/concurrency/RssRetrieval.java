@@ -1,15 +1,12 @@
 package com.berryman.cp.rss.concurrency;
 
 import com.berryman.cp.rss.dao.HttpRssDao;
-import com.berryman.cp.rss.model.RssEntry;
 import com.berryman.cp.rss.model.RssFeed;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
  * Class for concurrent RSS entry retrieval
@@ -28,14 +25,16 @@ public class RssRetrieval {
     @Autowired
     private HttpRssDao httpRssDao;
 
-    public void fire(final RssFeed rssFeed) {
+   public void fire(final RssFeed rssFeed) {
         taskExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                List<RssEntry> rssEntries = httpRssDao.retrieveRssEntries(rssFeed);
-                rssEntryCache.put(new Element(rssFeed.getId(), httpRssDao.retrieveRssEntries(rssFeed)));
+                httpRssDao.setFeed(rssFeed);
+                rssFeed.setRssEntries(httpRssDao.retrieveRssEntries());
+                rssEntryCache.put(new Element(rssFeed.getId(), rssFeed));
             }
         });
     }
+
 
 }

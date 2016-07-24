@@ -1,9 +1,6 @@
 package com.berryman.cp.rss.model;
 
 import com.rometools.rome.feed.synd.SyndEntry;
-import com.rometools.rome.feed.synd.SyndEntryImpl;
-import org.springframework.stereotype.Component;
-
 import javax.inject.Singleton;
 
 /**

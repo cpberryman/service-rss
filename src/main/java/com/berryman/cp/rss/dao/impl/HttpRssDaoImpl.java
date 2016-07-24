@@ -4,6 +4,7 @@ import com.berryman.cp.rss.dao.HttpRssDao;
 import com.berryman.cp.rss.model.RssEntry;
 import com.berryman.cp.rss.model.RssEntryBuilder;
 import com.berryman.cp.rss.model.RssFeed;
+import com.rometools.rome.feed.synd.SyndCategory;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndEntryImpl;
 import com.rometools.rome.feed.synd.SyndFeed;
@@ -36,11 +37,38 @@ public class HttpRssDaoImpl implements HttpRssDao {
     @Autowired
     private RssEntryBuilder rssEntryBuilder;
 
+    private RssFeed rssFeed;
+
+    private SyndFeed syndFeed;
+
     @Override
-    public List<RssEntry> retrieveRssEntries(RssFeed rssFeed) {
+    public HttpRssDao setFeed(RssFeed rssFeed) {
+        this.rssFeed = rssFeed;
+        this.syndFeed = this.getSyndFeed();
+        return this;
+    }
+
+    @Override
+    public RssFeed getRssFeed() {
+        return this.rssFeed;
+    }
+
+
+    @Override
+    public List<SyndCategory> retrieveFeedCategories() {
+        return syndFeed.getCategories();
+    }
+
+    @Override
+    public String retrieveFeedTitle(){
+        return syndFeed.getTitle();
+    }
+
+    @Override
+    public List<RssEntry> retrieveRssEntries() {
 
         List<RssEntry> rssEntries = new ArrayList<>();
-        List<SyndEntry> syndEntries = retrieveSyndEntries(rssFeed.getRssUrl());
+        List<SyndEntry> syndEntries = syndFeed.getEntries();
 
         for (SyndEntry syndEntry : syndEntries) {
             rssEntries.add(rssEntryBuilder.buildRssEntry(syndEntry, rssFeed));
@@ -50,15 +78,14 @@ public class HttpRssDaoImpl implements HttpRssDao {
 
     }
 
-    private List<SyndEntry> retrieveSyndEntries(String url) {
-
-        List<SyndEntry> syndEntries = new ArrayList<>();
-
+    private SyndFeed getSyndFeed() {
+        SyndFeed syndFeed = null;
         try {
-            URL feedUrl = new URL(url);
+            URL feedUrl = new URL(rssFeed.getRssUrl());
             SyndFeedInput syndFeedInput = new SyndFeedInput();
-            SyndFeed syndFeed = url.contains("https") ? syndFeedInput.build(new XmlReader(asHttpRequest(feedUrl))) : syndFeedInput.build(new XmlReader(feedUrl));
-            syndEntries = syndFeed.getEntries();
+            syndFeed = rssFeed.getRssUrl().contains("https") ?
+                    syndFeedInput.build(new XmlReader(asHttpRequest(feedUrl))) :
+                    syndFeedInput.build(new XmlReader(feedUrl));
         } catch (MalformedURLException ex) {
             LOGGER.debug("Bad feed url: ", ex);
         } catch (IOException ex) {
@@ -66,9 +93,7 @@ public class HttpRssDaoImpl implements HttpRssDao {
         } catch (FeedException ex) {
             LOGGER.debug("Bad feed: ", ex);
         }
-
-        return syndEntries;
-
+        return syndFeed;
     }
 
     private HttpURLConnection asHttpRequest(URL feedUrl) {
@@ -78,7 +103,7 @@ public class HttpRssDaoImpl implements HttpRssDao {
             String encoding = new BASE64Encoder().encode("username:password".getBytes());
             httpURLConnection.setRequestProperty("Authentication", "Basic " + encoding);
         } catch (IOException ex ){
-            LOGGER.debug("Error woth HTTP request: ", ex);
+            LOGGER.debug("Error with HTTP request: ", ex);
         }
         return httpURLConnection;
     }
