@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 
+import static com.berryman.cp.rss.util.TestUtil.getTestRssUrls;
 import static junit.framework.TestCase.assertEquals;
 
 /**
@@ -31,14 +32,8 @@ public class RssUrlRepositoryTests {
 
     @Before
     public void setUp() {
-        url1 = new RssUrl();
-        url1.setId("test1");
-        url1.setName("foo");
-        url1.setUrl("foo.com");
-        url2 = new RssUrl();
-        url2.setId("test2");
-        url2.setName("bar");
-        url2.setUrl("bar.com");
+        url1 = getTestRssUrls().get(0);
+        url2 = getTestRssUrls().get(1);
     }
 
     @Test

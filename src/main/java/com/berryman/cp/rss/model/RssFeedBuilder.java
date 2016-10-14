@@ -1,11 +1,8 @@
 package com.berryman.cp.rss.model;
 
-import com.berryman.cp.rss.dao.HttpRssDao;
-import com.rometools.rome.feed.synd.SyndCategory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.inject.Singleton;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,31 +10,43 @@ import java.util.List;
  *
  * @author cpberryman.
  */
+@Component
 @Singleton
 public class RssFeedBuilder {
 
-    private static Integer id = 0;
+    private String title;
+    private String rssUrl;
+    private List<RssEntry> rssEntries;
 
-    @Autowired
-    private HttpRssDao httpRssDao;
-
-    public RssFeed buildRssFeed(String url) {
-        id++;
-        RssFeed rssFeed = new RssFeed();
-        rssFeed.setId(id).setRssUrl(url);
-        httpRssDao.setFeed(rssFeed);
-        rssFeed.setTitle(httpRssDao.retrieveFeedTitle())
-                .setCatagories(categoriesAsString(httpRssDao.retrieveFeedCategories()))
-                .setRssEntries(httpRssDao.retrieveRssEntries());
-        return rssFeed;
+    public RssFeedBuilder title(String title) {
+        this.title = title;
+        return this;
     }
 
-    private List<String> categoriesAsString(List<SyndCategory> syndCategories) {
-        List<String> categories = new ArrayList<>();
-        for(SyndCategory syndCategory : syndCategories) {
-            categories.add(syndCategory.getName());
-        }
-        return categories;
+    public RssFeedBuilder rssUrl(String rssUrl) {
+        this.rssUrl = rssUrl;
+        return this;
     }
 
+    public RssFeedBuilder rssEntries(List<RssEntry> rssEntries) {
+        this.rssEntries = rssEntries;
+        return this;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public RssFeed build() {
+        return new RssFeed(this);
+    }
+
+    public String getRssUrl() {
+        return rssUrl;
+    }
+
+    public List<RssEntry> getRssEntries() {
+        return rssEntries;
+    }
 }
+

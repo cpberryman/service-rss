@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -13,57 +14,28 @@ import java.util.Date;
  * @author cpberryman.
  */
 @Component
-public class RssEntry {
+public class RssEntry implements Serializable {
 
     private String title;
     private String url;
-    private Integer feedId;
-    private String feedUrl;
     private Date date;
+
+    public RssEntry(RssEntryBuilder rssEntryBuilder) {
+        this.title = rssEntryBuilder.getTitle();
+        this.url = rssEntryBuilder.getUrl();
+        this.date = rssEntryBuilder.getDate();
+    }
 
     public String getTitle() {
         return title;
-    }
-
-    public RssEntry setTitle(String title) {
-        this.title = title;
-        return this;
     }
 
     public String getUrl() {
         return url;
     }
 
-    public RssEntry setUrl(String url) {
-        this.url = url;
-        return this;
-    }
-
     public Date getDate() {
         return date;
-    }
-
-    public RssEntry setDate(Date date) {
-        this.date = date;
-        return this;
-    }
-
-    public String getFeedUrl() {
-        return feedUrl;
-    }
-
-    public RssEntry setFeedUrl(String feedUrl) {
-        this.feedUrl = feedUrl;
-        return this;
-    }
-
-    public Integer getFeedId() {
-        return feedId;
-    }
-
-    public RssEntry setFeedId(Integer feedId) {
-        this.feedId = feedId;
-        return this;
     }
 
     @Override
@@ -77,8 +49,6 @@ public class RssEntry {
         return new EqualsBuilder()
                 .append(title, rssEntry.title)
                 .append(url, rssEntry.url)
-                .append(feedId, rssEntry.feedId)
-                .append(feedUrl, rssEntry.feedUrl)
                 .append(date, rssEntry.date)
                 .isEquals();
     }
@@ -88,8 +58,6 @@ public class RssEntry {
         return new HashCodeBuilder(17, 37)
                 .append(title)
                 .append(url)
-                .append(feedId)
-                .append(feedUrl)
                 .append(date)
                 .toHashCode();
     }
@@ -99,8 +67,6 @@ public class RssEntry {
         return new ToStringBuilder(this)
                 .append("title", title)
                 .append("url", url)
-                .append("feedId", feedId)
-                .append("feedUrl", feedUrl)
                 .append("date", date)
                 .toString();
     }

@@ -1,7 +1,7 @@
 package com.berryman.cp.rss.service;
 
-import com.berryman.cp.rss.model.RssEntry;
 import com.berryman.cp.rss.model.RssFeed;
+import com.berryman.cp.rss.model.RssUrl;
 
 import java.util.List;
 
@@ -12,17 +12,15 @@ import java.util.List;
  */
 public interface RssService {
 
-    List<RssEntry> listAllEntries();  //all entries listed
+    RssUrl addRssUrl(RssUrl rssUrl);
 
-    List<RssEntry> listEntriesByNumber(Integer number);  //entries listed for all feeds by number
+    List<RssUrl> retrieveAllRssUrls();
 
-    List<RssEntry> listEntriesByFeed(RssFeed rssFeed);  //all entries listed for a feed
+    List<RssFeed> retrieveEntriesForAllFeedsByNumber(Integer number);
 
-    List<RssEntry> listEntriesForFeedByNumber(RssFeed rssFeed, Integer number); //a given number of entries for a given feed
+    RssFeed retrieveEntriesForFeedByNumber(String rssFeedName, Integer number);
 
-    void addFeed(String url);
-
-    void deleteFeed(RssFeed rssFeed);
+    RssFeed retrieveEntriesForFeedByNumber(RssFeed rssFeed, Integer number);
 
 }
 

@@ -3,11 +3,15 @@ package com.berryman.cp.rss.config;
 import static com.berryman.cp.rss.util.Constants.*;
 
 import com.berryman.cp.rss.model.RssFeed;
+import com.mongodb.Mongo;
+import com.mongodb.MongoClient;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
@@ -18,7 +22,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
  */
 @Configuration
 @EnableScheduling
-public class ApplicationConfig {
+@EnableMongoRepositories(basePackages = "com.berryman.cp.rss")
+public class ApplicationConfig extends AbstractMongoConfiguration {
 
     @Bean
     public TaskExecutor taskExecutor() {
@@ -37,4 +42,13 @@ public class ApplicationConfig {
     }
 
 
+    @Override
+    protected String getDatabaseName() {
+        return DB_NAME;
+    }
+
+    @Override
+    public Mongo mongo() throws Exception {
+        return new MongoClient("localhost:27017");
+    }
 }

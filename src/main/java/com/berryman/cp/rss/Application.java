@@ -14,10 +14,9 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan("com.berryman.cp.rss")
-@EnableMongoRepositories(basePackages = "com.berryman.cp.rss")
 public class Application {
 
-    public void main(String[] args) {
+    public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 

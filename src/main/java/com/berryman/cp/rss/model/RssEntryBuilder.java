@@ -1,21 +1,51 @@
 package com.berryman.cp.rss.model;
 
-import com.rometools.rome.feed.synd.SyndEntry;
+import org.springframework.stereotype.Component;
+
 import javax.inject.Singleton;
+import java.util.Date;
 
 /**
  * Builder class for RSS entries
  *
  * @author cpberryman.
  */
-//@Component
+@Component
 @Singleton
 public class RssEntryBuilder {
 
-    public RssEntry buildRssEntry(SyndEntry syndEntry, RssFeed rssFeed) {
-        return new RssEntry().setTitle(syndEntry.getTitle()).setUrl(syndEntry.getUri()).setFeedId(rssFeed.getId())
-                .setFeedUrl(rssFeed.getHttpUrl()).setDate(syndEntry.getPublishedDate());
+    private String title;
+    private String url;
+    private Date date;
 
+    public RssEntryBuilder title(String title) {
+        this.title = title;
+        return this;
     }
 
+    public RssEntryBuilder url(String url) {
+        this.url = url;
+        return this;
+    }
+
+    public RssEntryBuilder date(Date date) {
+        this.date = date;
+        return this;
+    }
+
+    public RssEntry build(){
+        return new RssEntry(this);
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public Date getDate() {
+        return date;
+    }
 }
