@@ -29,9 +29,9 @@ public class RssRetrieval {
         taskExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                httpRssDao.setFeed(rssFeed);
-                rssFeed.setRssEntries(httpRssDao.retrieveRssEntries());
-                rssEntryCache.put(new Element(rssFeed.getId(), rssFeed));
+//                httpRssDao.setFeed(rssFeed);
+//                rssFeed.setRssEntries(httpRssDao.retrieveRssEntries());
+//                cache.put(new Element(rssFeed.getId(), rssFeed));
             }
         });
     }

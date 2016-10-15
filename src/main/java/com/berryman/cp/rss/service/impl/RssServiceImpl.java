@@ -1,6 +1,9 @@
 package com.berryman.cp.rss.service.impl;
 
-import com.berryman.cp.rss.model.*;
+import com.berryman.cp.rss.model.RssEntry;
+import com.berryman.cp.rss.model.RssFeed;
+import com.berryman.cp.rss.model.RssFeedBuilder;
+import com.berryman.cp.rss.model.RssUrl;
 import com.berryman.cp.rss.repository.RssUrlRepository;
 import com.berryman.cp.rss.service.RssService;
 import net.sf.ehcache.Cache;
@@ -10,7 +13,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Implementation of the {@link RssService} interface
@@ -23,7 +29,7 @@ public class RssServiceImpl implements RssService {
     private static final Logger LOGGER = LoggerFactory.getLogger(RssServiceImpl.class);
 
     @Autowired
-    private Cache rssEntryCache;
+    private Cache cache;
 
     @Autowired
     private RssUrlRepository rssRepository;
@@ -33,106 +39,71 @@ public class RssServiceImpl implements RssService {
 
     @Override
     public RssUrl addRssUrl(RssUrl rssUrl) {
-        rssRepository.insert(rssUrl);
-        return rssUrl;
+        return rssRepository.insert(rssUrl);
     }
 
     @Override
     public List<RssUrl> retrieveAllRssUrls() {
-        return null;
+        return rssRepository.findAll();
     }
 
     @Override
     public List<RssFeed> retrieveEntriesForAllFeedsByNumber(Integer number) {
-        return null;
+        List<RssFeed> feeds = new ArrayList<>();
+
+        if(number > 0) {
+            for (RssFeed feed : listAllFeeds()) {
+                feeds.add(asTemporaryFeed(feed, number));
+            }
+        }
+
+        return feeds;
     }
 
     @Override
     public RssFeed retrieveEntriesForFeedByNumber(String rssFeedName, Integer number) {
-        return null;
+        RssFeed feed = (RssFeed) cache.get(rssFeedName).getObjectValue();
+
+        return asTemporaryFeed(feed, number);
     }
 
-    @Override
-    public RssFeed retrieveEntriesForFeedByNumber(RssFeed rssFeed, Integer number) {
-        return null;
+    private RssFeed asTemporaryFeed(RssFeed feed, Integer number) {
+        RssFeed temp = rssFeedBuilder.title(feed.getTitle()).rssUrl(feed.getRssUrl()).build();
+        temp.setRssEntries(getEntriesByNumber(feed, number));
+
+        return temp;
     }
 
-//    @Override
-//    public List<RssFeed> listFeeds() {
-//        return rssRepository.findAll();
+    private List<RssFeed> listAllFeeds() {
+        List<RssFeed> feeds = new ArrayList<>();
+        Map<Object, Element> rssFeeds = cache.getAll(cache.getKeys());
+        for (Map.Entry<Object, Element> entry : rssFeeds.entrySet()) {
+            feeds.add((RssFeed) entry.getValue().getObjectValue());
+        }
+
+        return feeds;
+    }
+
+//    public void deleteFeed(String url) {
+//        rssRepository.deleteRssFeedByUrl(url);
 //    }
-//
-//    public List<RssEntry> listAllEntries() {
-//        List<RssEntry> rssEntries = new ArrayList<>();
-//        Map<Object, Element> rssFeeds = rssEntryCache.getAll(rssEntryCache.getKeys());
-//        for (Map.Entry<Object, Element> entry : rssFeeds.entrySet()) {
-//            Element value = entry.getValue();
-//            for(RssEntry rssEntry : (RssEntry[]) value.getObjectValue()) {
-//                rssEntries.add(rssEntry);
-//            }
-//        }
-//        return rssEntries;
-//    }
-//
-//    public List<RssEntry> listEntriesByNumber(Integer number) {
-//        List<RssEntry> rssEntries = new ArrayList<>();
-//        for(RssFeed rssFeed : rssRepository.findAll()) {
-//            rssEntries.addAll(getEntriesByNumber(rssFeed, number));
-//        }
-//        return rssEntries;
-//    }
-//
-//    public List<RssEntry> listEntriesByFeed(RssFeed rssFeed) {
-//        List<RssEntry> rssEntries = new ArrayList<>();
-//        RssFeed rssFeedTemp = (RssFeed) rssEntryCache.get(rssFeed.getId()).getObjectValue();
-//        rssEntries.addAll(rssFeedTemp.getRssEntries());
-//        return rssEntries;
-//    }
-//
-//    public List<RssEntry> listEntriesForFeedByNumber(RssFeed rssFeed, Integer number) {
-//        return getEntriesByNumber(rssFeed, number);
-//    }
-//
-//
-//
-//
-////    public void deleteFeed(String url) {
-////        rssRepository.deleteRssFeedByUrl(url);
-////    }
-//
-//    public List<RssFeed> retrieveFeedsByCategory(String category) {
-//        List<RssFeed> rssFeeds = new ArrayList<>();
-//        Map<Object, Element> rssFeedsAll = rssEntryCache.getAll(rssEntryCache.getKeys());
-//        for (Map.Entry<Object, Element> entry : rssFeedsAll.entrySet()) {
-//            Element value = entry.getValue();
-//            RssFeed rssFeed = (RssFeed) value.getObjectValue();
-//            List<String> categories = rssFeed.getCatagories();
-//            for(String cat : categories) {
-//                if(cat.equalsIgnoreCase(category))
-//                rssFeeds.add(rssFeed);
-//            }
-//        }
-//        return rssFeeds;
-//    }
-//
-//
-//
-//    private List<RssEntry> getEntriesByNumber(RssFeed rssFeed, Integer number) {
-//        List<RssEntry> rssEntries = sorted(listEntriesByFeed(rssFeed));
-//        List<RssEntry> rssEntriesByNumber = new ArrayList<>();
-//        int counter = 0;
-//        while(counter < number) {
-//            rssEntriesByNumber.add(rssEntries.get(counter));
-//            counter++;
-//        }
-//        return rssEntriesByNumber;
-//    }
-//
-//    public static List<RssEntry> sorted(List rssEntries) {
-//        Collections.sort(rssEntries);
-//        Collections.reverse(rssEntries);
-//        return rssEntries;
-//    }
+
+    private List<RssEntry> getEntriesByNumber(RssFeed rssFeed, Integer number) {
+        List<RssEntry> rssEntries = sorted(rssFeed.getRssEntries());
+        List<RssEntry> rssEntriesByNumber = new ArrayList<>();
+        int counter = 0;
+        while(counter < number) {
+            rssEntriesByNumber.add(rssEntries.get(counter));
+            counter++;
+        }
+        return rssEntriesByNumber;
+    }
+
+    public static List<RssEntry> sorted(List rssEntries) {
+        Collections.sort(rssEntries);
+        Collections.reverse(rssEntries);
+        return rssEntries;
+    }
 
 
 }

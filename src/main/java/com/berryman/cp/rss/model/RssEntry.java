@@ -14,7 +14,7 @@ import java.util.Date;
  * @author cpberryman.
  */
 @Component
-public class RssEntry implements Serializable {
+public class RssEntry implements Serializable, Comparable<RssEntry> {
 
     private String title;
     private String url;
@@ -71,4 +71,9 @@ public class RssEntry implements Serializable {
                 .toString();
     }
 
+
+    @Override
+    public int compareTo(RssEntry entry) {
+        return entry.getDate().compareTo(date);
+    }
 }

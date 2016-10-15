@@ -15,6 +15,8 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import java.util.concurrent.Executor;
+
 /**
  * Bean configuration class for the application
  *
@@ -35,9 +37,8 @@ public class ApplicationConfig extends AbstractMongoConfiguration {
     }
 
     @Bean
-    public Cache rssEntryCache() {
+    public Cache cache() {
         CacheManager cacheManager = CacheManager.getInstance();
-        cacheManager.addCache(RSS_ENTRY_CACHE);
         return cacheManager.getCache(RSS_ENTRY_CACHE);
     }
 
@@ -50,5 +51,15 @@ public class ApplicationConfig extends AbstractMongoConfiguration {
     @Override
     public Mongo mongo() throws Exception {
         return new MongoClient("localhost:27017");
+    }
+
+    public Executor getAsyncExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(2);
+        executor.setMaxPoolSize(2);
+        executor.setQueueCapacity(500);
+        executor.setThreadNamePrefix("rss_retrieval-");
+        executor.initialize();
+        return executor;
     }
 }

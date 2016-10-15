@@ -32,6 +32,22 @@ public class RssFeed implements Serializable {
         this.rssEntries = rssFeedBuilder.getRssEntries();
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public String getRssUrl() {
+        return rssUrl;
+    }
+
+    public List<RssEntry> getRssEntries() {
+        return rssEntries;
+    }
+
+    public void setRssEntries(List<RssEntry> rssEntries) {
+        this.rssEntries = rssEntries;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

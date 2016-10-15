@@ -22,7 +22,7 @@ import static junit.framework.TestCase.assertEquals;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ApplicationConfig.class)
-public class RssUrlRepositoryTests {
+public class RssUrlRepositoryTest {
 
     @Autowired
     RssUrlRepository repository;
@@ -75,6 +75,23 @@ public class RssUrlRepositoryTests {
 
         //then...
         assertEquals(actual.getName(), url1.getName());
+
+    }
+
+    @Test
+    public void findAllRssUrlsCorrectly() {
+
+        //given...
+        repository.insert(url1);
+        repository.insert(url2);
+
+        //when...
+        List<RssUrl> actualUrls = repository.findAll();
+
+        //then...
+        assertEquals(actualUrls.size(), 2);
+        assertEquals(actualUrls.get(0), url1);
+        assertEquals(actualUrls.get(1), url2);
 
     }
 

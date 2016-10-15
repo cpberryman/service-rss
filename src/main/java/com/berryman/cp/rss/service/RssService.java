@@ -20,7 +20,5 @@ public interface RssService {
 
     RssFeed retrieveEntriesForFeedByNumber(String rssFeedName, Integer number);
 
-    RssFeed retrieveEntriesForFeedByNumber(RssFeed rssFeed, Integer number);
-
 }
 
