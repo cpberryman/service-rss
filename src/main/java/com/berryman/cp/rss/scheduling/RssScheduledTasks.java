@@ -2,6 +2,7 @@ package com.berryman.cp.rss.scheduling;
 
 import com.berryman.cp.rss.concurrency.RssRetrieval;
 import com.berryman.cp.rss.model.RssFeed;
+import com.berryman.cp.rss.model.RssUrl;
 import com.berryman.cp.rss.repository.RssUrlRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,21 +29,21 @@ public class RssScheduledTasks {
     @Autowired
     private RssRetrieval rssRetrieval;
 
-//    @PostConstruct
-//    @Scheduled(cron = "0 0 * * * *")
-//    public void loadRssEntries() {
-//        List<RssFeed> rssFeeds = rssRepository.findAll();
-//        if (rssFeeds != null) {
-//            if(!rssFeeds.isEmpty()) {
-//                for (RssFeed rssFeed : rssFeeds) {
-//                    rssRetrieval.fire(rssFeed);
-//                }
-//            } else {
-//                LOGGER.debug("Error retrieving RSS Feeds from database");
-//            }
-//        } else {
-//            LOGGER.debug("Error retrieving RSS Feeds from database");
-//        }
-//    }
+    @PostConstruct
+    @Scheduled(cron = "0 0/2 * * * *")
+    public void loadRssEntries() {
+        List<RssUrl> rssUrls = rssRepository.findAll();
+        if (rssUrls != null) {
+            if(!rssUrls.isEmpty()) {
+                for (RssUrl rssUrl : rssUrls) {
+                    rssRetrieval.fire(rssUrl);
+                }
+            } else {
+                LOGGER.debug("Error retrieving RSS Feeds from database");
+            }
+        } else {
+            LOGGER.debug("Error retrieving RSS Feeds from database");
+        }
+    }
 
 }

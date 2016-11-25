@@ -33,7 +33,7 @@ public class RssController {
 
     @ResponseBody
     @RequestMapping(value = "/add",
-            method = RequestMethod.POST,
+            method = RequestMethod.GET,
             produces = "application/json")
     public RssUrl addRssUrl(@RequestParam("id") String id,
                             @RequestParam("name") String name,

@@ -39,6 +39,7 @@ public class HttpRssDaoImpl implements HttpRssDao {
 
     private SyndFeed syndFeed;
 
+    @Override
     public HttpRssDao setRssUrl(RssUrl rssUrl) {
         this.rssUrl = rssUrl;
         this.syndFeed = this.getSyndFeed();

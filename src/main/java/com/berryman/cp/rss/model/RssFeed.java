@@ -15,7 +15,6 @@ import java.util.List;
  *
  * @author cpberryman.
  */
-@Component
 @JsonRootName(value = "RssFeed")
 public class RssFeed implements Serializable {
 

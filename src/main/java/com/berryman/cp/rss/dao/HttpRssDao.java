@@ -14,6 +14,8 @@ import java.util.List;
  */
 public interface HttpRssDao {
 
+    HttpRssDao setRssUrl(RssUrl rssUrl);
+
     String retrieveFeedTitle();
 
     List<RssEntry> retrieveRssEntries();

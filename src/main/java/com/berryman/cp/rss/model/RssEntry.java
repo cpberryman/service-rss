@@ -13,7 +13,6 @@ import java.util.Date;
  *
  * @author cpberryman.
  */
-@Component
 public class RssEntry implements Serializable, Comparable<RssEntry> {
 
     private String title;

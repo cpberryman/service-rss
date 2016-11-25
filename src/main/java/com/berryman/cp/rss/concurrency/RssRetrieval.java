@@ -2,6 +2,8 @@ package com.berryman.cp.rss.concurrency;
 
 import com.berryman.cp.rss.dao.HttpRssDao;
 import com.berryman.cp.rss.model.RssFeed;
+import com.berryman.cp.rss.model.RssFeedBuilder;
+import com.berryman.cp.rss.model.RssUrl;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +27,20 @@ public class RssRetrieval {
     @Autowired
     private HttpRssDao httpRssDao;
 
-   public void fire(final RssFeed rssFeed) {
+    @Autowired
+    private RssFeedBuilder builder;
+
+   public void fire(final RssUrl rssUrl) {
         taskExecutor.execute(new Runnable() {
             @Override
             public void run() {
-//                httpRssDao.setFeed(rssFeed);
-//                rssFeed.setRssEntries(httpRssDao.retrieveRssEntries());
-//                cache.put(new Element(rssFeed.getId(), rssFeed));
+                httpRssDao.setRssUrl(rssUrl);
+                RssFeed rssFeed = builder
+                        .title(httpRssDao.retrieveFeedTitle())
+                        .rssUrl(rssUrl.getUrl())
+                        .rssEntries(httpRssDao.retrieveRssEntries())
+                        .build();
+                rssEntryCache.put(new Element(rssFeed.getTitle(), rssFeed));
             }
         });
     }
