@@ -32,6 +32,7 @@ public class RssScheduledTasks {
     @PostConstruct
     @Scheduled(cron = "0 0/1 * * * *")
     public void loadRssEntries() {
+        LOGGER.debug("loading entries...");
         List<RssUrl> rssUrls = rssRepository.findAll();
         if (rssUrls != null) {
             if(!rssUrls.isEmpty()) {
@@ -39,10 +40,10 @@ public class RssScheduledTasks {
                     rssRetrieval.fire(rssUrl);
                 }
             } else {
-                LOGGER.debug("Error retrieving RSS Feeds from database");
+                LOGGER.info("Error retrieving RSS Feeds from database");
             }
         } else {
-            LOGGER.debug("Error retrieving RSS Feeds from database");
+            LOGGER.info("Error retrieving RSS Feeds from database");
         }
     }
 

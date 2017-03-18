@@ -41,7 +41,7 @@ public class RssServiceImpl implements RssService {
     @Override
     public RssUrl addRssUrl(RssUrl rssUrl) {
         if (rssRepository.findById(rssUrl.getId()) != null) {
-            throw new MongoException("url exits : " + rssUrl.getId());
+            throw new MongoException("url exists : " + rssUrl.getId());
         }
         return rssRepository.insert(rssUrl);
     }
