@@ -38,8 +38,13 @@ public class RssController {
     public RssUrl addRssUrl(@RequestParam("id") String id,
                             @RequestParam("name") String name,
                             @RequestParam("url") String url) throws ParseException {
-
-        return rssService.addRssUrl(asRssUrl(id, name, url));
+        RssUrl rssUrlTemp = new RssUrl(null, null, null);
+        try {
+            rssUrlTemp = rssService.addRssUrl(asRssUrl(id, name, url));
+        } catch (Exception e) {
+            LOGGER.info(e.getMessage());
+        }
+        return rssUrlTemp;
 
     }
 

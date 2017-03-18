@@ -30,7 +30,7 @@ public class RssScheduledTasks {
     private RssRetrieval rssRetrieval;
 
     @PostConstruct
-    @Scheduled(cron = "0 0/2 * * * *")
+    @Scheduled(cron = "0 0/1 * * * *")
     public void loadRssEntries() {
         List<RssUrl> rssUrls = rssRepository.findAll();
         if (rssUrls != null) {

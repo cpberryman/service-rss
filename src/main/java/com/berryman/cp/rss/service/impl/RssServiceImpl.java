@@ -6,6 +6,7 @@ import com.berryman.cp.rss.model.RssFeedBuilder;
 import com.berryman.cp.rss.model.RssUrl;
 import com.berryman.cp.rss.repository.RssUrlRepository;
 import com.berryman.cp.rss.service.RssService;
+import com.mongodb.MongoException;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import org.slf4j.Logger;
@@ -39,6 +40,9 @@ public class RssServiceImpl implements RssService {
 
     @Override
     public RssUrl addRssUrl(RssUrl rssUrl) {
+        if (rssRepository.findById(rssUrl.getId()) != null) {
+            throw new MongoException("url exits : " + rssUrl.getId());
+        }
         return rssRepository.insert(rssUrl);
     }
 
@@ -51,7 +55,7 @@ public class RssServiceImpl implements RssService {
     public List<RssFeed> retrieveEntriesForAllFeedsByNumber(Integer number) {
         List<RssFeed> feeds = new ArrayList<>();
 
-        if(number > 0) {
+        if (number > 0) {
             for (RssFeed feed : listAllFeeds()) {
                 feeds.add(asTemporaryFeed(feed, number));
             }
@@ -91,10 +95,9 @@ public class RssServiceImpl implements RssService {
     private List<RssEntry> getEntriesByNumber(RssFeed rssFeed, Integer number) {
         List<RssEntry> rssEntries = sorted(rssFeed.getRssEntries());
         List<RssEntry> rssEntriesByNumber = new ArrayList<>();
-        int counter = 0;
-        while(counter < number) {
-            rssEntriesByNumber.add(rssEntries.get(counter));
-            counter++;
+        for (int i = 0; i < number; i++) {
+            if (i < rssEntries.size())
+                rssEntriesByNumber.add(rssEntries.get(i));
         }
         return rssEntriesByNumber;
     }

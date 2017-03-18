@@ -59,7 +59,7 @@ public class RssControllerTest {
         when(rssServiceMock.addRssUrl(any(RssUrl.class))).thenReturn(url);
 
         //when... //then...
-        mockMvc.perform(post("/rss/add?id=test1&name=foo&url=foo.com"))
+        mockMvc.perform(get("/rss/add?id=test1&name=foo&url=foo.com"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is("test1")))

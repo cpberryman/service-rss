@@ -65,6 +65,7 @@ public class RssServiceImplTest {
         //then...
         assertEquals(rssUrlActual, rssUrl);
         verify(rssRepositoryMock, times(1)).insert(any(RssUrl.class));
+        verify(rssRepositoryMock, times(1)).findById(anyString());
         verifyNoMoreInteractions(rssRepositoryMock);
 
     }

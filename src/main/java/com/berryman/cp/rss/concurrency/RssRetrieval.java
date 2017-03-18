@@ -34,13 +34,14 @@ public class RssRetrieval {
         taskExecutor.execute(new Runnable() {
             @Override
             public void run() {
+                String key = rssUrl.getName();
                 httpRssDao.setRssUrl(rssUrl);
                 RssFeed rssFeed = builder
                         .title(httpRssDao.retrieveFeedTitle())
                         .rssUrl(rssUrl.getUrl())
                         .rssEntries(httpRssDao.retrieveRssEntries())
                         .build();
-                rssEntryCache.put(new Element(rssFeed.getTitle(), rssFeed));
+                rssEntryCache.put(new Element(key, rssFeed));
             }
         });
     }
